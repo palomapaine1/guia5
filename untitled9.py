@@ -42,3 +42,11 @@ if uploaded_file is not None:
     # Mostrar los datos filtrados
     st.write(f'Datos filtrados donde {col} >= {valor_min}:')
     st.write(df_filtrado)
+    # Crear gráfico de histograma
+fig, ax = plt.subplots()
+ax.hist(df[col], bins=20)
+ax.set_title(f'Histograma de {col}')
+ax.set_xlabel(col)
+ax.set_ylabel('Frecuencia')
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
