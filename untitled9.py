@@ -43,6 +43,7 @@ if uploaded_file is not None:
     st.write(f'Datos filtrados donde {col} >= {valor_min}:')
     st.write(df_filtrado)
     # Crear gráfico de histograma
+# Crear gráfico de histograma
 fig, ax = plt.subplots()
 ax.hist(df[col], bins=20)
 ax.set_title(f'Histograma de {col}')
