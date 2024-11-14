@@ -24,9 +24,6 @@ if uploaded_file is not None:
     st.write('Primeras 5 filas del archivo:')
     st.write(df.head())
 
-if uploaded_file is not None:
-# Leer el archivo CSV
-df = pd.read_csv(uploaded_file)
 # Mostrar la estructura del DataFrame
 st.write('Estructura del DataFrame:')
 st.write(df.describe())
