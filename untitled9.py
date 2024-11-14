@@ -9,7 +9,6 @@ Original file is located at
 
 import streamlit as st
 import pandas as pd
-
 # Título de la aplicación
 st.title('Aplicación de Análisis de Datos')
 
@@ -17,22 +16,29 @@ st.title('Aplicación de Análisis de Datos')
 uploaded_file = st.file_uploader('Sube tu archivo CSV', type=['csv'])
 
 if uploaded_file is not None:
-    # Leer el archivo CSV usando Pandas
-    # This line was not indented correctly and caused the error.
+    # Leer el archivo CSV, this line and the following need to be indented
     df = pd.read_csv(uploaded_file)
-    # Mostrar las primeras filas del archivo
-    st.write('Primeras 5 filas del archivo:')
-    st.write(df.head())
-
-# Mostrar la estructura del DataFrame
-st.write('Estructura del DataFrame:')
-st.write(df.describe())
-# Seleccionar una columna numérica para analizar
-col = st.selectbox('Selecciona una columna para filtrar', df.columns)
-# Filtrar datos según el valor de la columna
-valor_min = st.slider('Selecciona un valor mínimo',
-float(df[col].min()), float(df[col].max()))
-df_filtrado = df[df[col] >= valor_min]
-# Mostrar los datos filtrados
-st.write(f'Datos filtrados donde {col} >= {valor_min}:')
-st.write(df_filtrado)
+    # Mostrar la estructura del DataFrame
+    st.write('Estructura del DataFrame:')
+    st.write(df.describe())
+    # Seleccionar una columna numérica para analizar
+    col = st.selectbox('Selecciona una columna para filtrar', df.columns)
+    # Filtrar datos según el valor de la columna
+    valor_min = st.slider('Selecciona un valor mínimo',
+    float(df[col].min()), float(df[col].max()))
+    df_filtrado = df[df[col] >= valor_min]
+    # Mostrar los datos filtrados
+    st.write(f'Datos filtrados donde {col} >= {valor_min}:')
+    st.write(df_filtrado)
+    # Mostrar la estructura del DataFrame
+    st.write('Estructura del DataFrame:')
+    st.write(df.describe())
+    # Seleccionar una columna numérica para analizar
+    col = st.selectbox('Selecciona una columna para filtrar', df.columns)
+    # Filtrar datos según el valor de la columna
+    valor_min = st.slider('Selecciona un valor mínimo',
+    float(df[col].min()), float(df[col].max()))
+    df_filtrado = df[df[col] >= valor_min]
+    # Mostrar los datos filtrados
+    st.write(f'Datos filtrados donde {col} >= {valor_min}:')
+    st.write(df_filtrado)
