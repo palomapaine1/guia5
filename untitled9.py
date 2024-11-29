@@ -12,42 +12,91 @@ import pandas as pd
 # Título de la aplicación
 st.title('Aplicación de Análisis de Datos')
 
-# Cargar el archivo CSV
-uploaded_file = st.file_uploader('Sube tu archivo CSV', type=['csv'])
+import streamlit as st
+import requests
+import pandas as pd
 
-if uploaded_file is not None:
-    # Leer el archivo CSV, this line and the following need to be indented
-    df = pd.read_csv(uploaded_file)
-    # Mostrar la estructura del DataFrame
-    st.write('Estructura del DataFrame:')
-    st.write(df.describe())
-    # Seleccionar una columna numérica para analizar
-    col = st.selectbox('Selecciona una columna para filtrar', df.columns)
-    # Filtrar datos según el valor de la columna
-    valor_min = st.slider('Selecciona un valor mínimo',
-    float(df[col].min()), float(df[col].max()))
-    df_filtrado = df[df[col] >= valor_min]
-    # Mostrar los datos filtrados
-    st.write(f'Datos filtrados donde {col} >= {valor_min}:')
-    st.write(df_filtrado)
-    # Mostrar la estructura del DataFrame
-    st.write('Estructura del DataFrame:')
-    st.write(df.describe())
-    # Seleccionar una columna numérica para analizar
-    col = st.selectbox('Selecciona una columna para filtrar', df.columns)
-    # Filtrar datos según el valor de la columna
-    valor_min = st.slider('Selecciona un valor mínimo',
-    float(df[col].min()), float(df[col].max()))
-    df_filtrado = df[df[col] >= valor_min]
-    # Mostrar los datos filtrados
-    st.write(f'Datos filtrados donde {col} >= {valor_min}:')
-    st.write(df_filtrado)
-    # Crear gráfico de histograma
-# Crear gráfico de histograma
-fig, ax = plt.subplots()
-ax.hist(df[col], bins=20)
-ax.set_title(f'Histograma de {col}')
-ax.set_xlabel(col)
-ax.set_ylabel('Frecuencia')
-# Mostrar el gráfico en Streamlit
-st.pyplot(fig)
+# Función para obtener datos de la API REST Countries
+@st.cache
+def get_country_data():
+    url = "https://restcountries.com/v3.1/all"
+    response = requests.get(url)
+    if response.status_code == 200:
+        countries = response.json()
+        data = []
+        for country in countries:
+            data.append({
+                "Nombre Común": country.get("name", {}).get("common", "N/A"),
+                "Región": country.get("region", "N/A"),
+                "Población": country.get("population", 0),
+                "Área (km²)": country.get("area", 0),
+                "Número de Fronteras": len(country.get("borders", [])),
+                "Número de Idiomas": len(country.get("languages", {}).keys()),
+                "Número de Zonas Horarias": len(country.get("timezones", []))
+            })
+        return pd.DataFrame(data)
+    else:
+        st.error("No se pudo obtener datos de la API.")
+        return pd.DataFrame()
+
+# Cargar datos
+df = get_country_data()
+
+# Configuración de la aplicación multipágina
+st.sidebar.title("Navegación")
+menu = st.sidebar.radio("Seleccione una página:", ["Descripción del Proyecto", "Interacción con los Datos", "Visualización Personalizada"])
+
+# Página 1: Descripción del Proyecto
+if menu == "Descripción del Proyecto":
+    st.title("Descripción del Proyecto")
+    st.subheader("Acerca de la API REST Countries")
+    st.markdown("""
+    Este proyecto utiliza la API de [REST Countries](https://restcountries.com/) para obtener información 
+    sobre países del mundo. La API proporciona datos como población, área, fronteras, idiomas oficiales, 
+    zonas horarias y más.
+    """)
+    st.write("Herramientas utilizadas:")
+    st.markdown("""
+    - **Streamlit**: Para construir la aplicación web.
+    - **Pandas**: Para procesar y analizar datos.
+    - **Requests**: Para interactuar con la API.
+    """)
+
+# Página 2: Interacción con los Datos
+elif menu == "Interacción con los Datos":
+    st.title("Interacción con los Datos")
+    
+    # Mostrar los datos originales
+    st.subheader("Datos Originales")
+    if st.checkbox("Mostrar datos"):
+        st.dataframe(df)
+
+    # Seleccionar columna específica
+    st.subheader("Seleccionar Columna")
+    columnas = df.columns.tolist()
+    columna_seleccionada = st.selectbox("Seleccione una columna para visualizar", columnas)
+    st.write(f"Columna seleccionada: {columna_seleccionada}")
+    st.write(df[[columna_seleccionada]])
+
+# Página 3: Visualización Personalizada
+elif menu == "Visualización Personalizada":
+    st.title("Visualización Personalizada")
+    
+    # Filtrar por región
+    st.subheader("Filtrar por Región")
+    regiones = df["Región"].unique().tolist()
+    region_seleccionada = st.selectbox("Seleccione una región", ["Todas"] + regiones)
+    if region_seleccionada != "Todas":
+        df_filtrado = df[df["Región"] == region_seleccionada]
+    else:
+        df_filtrado = df
+
+    st.write(f"Países en la región seleccionada ({region_seleccionada}):")
+    st.dataframe(df_filtrado)
+
+    # Estadísticas básicas
+    st.subheader("Estadísticas Básicas")
+    st.write("Promedio de población:")
+    st.write(df_filtrado["Población"].mean())
+    st.write("Promedio de área:")
+    st.write(df_filtrado["Área (km²)"].mean())
