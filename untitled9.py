@@ -80,41 +80,46 @@ else:
     st.title("Interacción con los datos")
     st.header("Mostrar los datos originales")
     st.dataframe(df_cleaned)
-    import streamlit as st
-import pandas as pd
-import numpy as np
-
-# Simulación de datos (puedes reemplazar con datos reales del DataFrame)
-data = {
+    data = {
     "Nombre": ["País A", "País B", "País C", "País D"],
     "Población": [5000000, 12000000, 8000000, 6000000],
     "Área (km²)": [100000, 250000, 180000, 150000],
-    "Zonas Horarias": [1, 2, 1, 3],}
+    "Zonas Horarias": [1, 2, 1, 3],
+    "Región": ["Asia", "Europa", "África", "América"]}
 df = pd.DataFrame(data)
 
 # Título de la aplicación
-st.title("Cálculo de Estadísticas")
+st.title("Cálculo de Estadísticas con Selección por Categoría")
 
 # Mostrar el DataFrame original
 st.subheader("Datos Originales")
 st.write(df)
 
-# Menú desplegable para seleccionar una columna
-st.subheader("Seleccione una Columna para Calcular Estadísticas")
-columna_seleccionada = st.selectbox("Seleccione una columna numérica:", df.select_dtypes(include=np.number).columns)
+# Selección de categoría
+st.subheader("Selección por Categoría")
+categorias = {"Demografía": ["Población", "Zonas Horarias"], 
+              "Geografía": ["Área (km²)"]}
 
-if columna_seleccionada:
-    # Cálculos estadísticos
-    media = df[columna_seleccionada].mean()
-    mediana = df[columna_seleccionada].median()
-    desviacion = df[columna_seleccionada].std()
+# Botón para mostrar opciones de categoría
+if st.button("Seleccionar Categoría"):
+    categoria = st.radio("Elige una categoría:", list(categorias.keys()))
 
-    # Mostrar resultados
-    st.write(f"**Columna seleccionada:** {columna_seleccionada}")
-    st.write(f"**Media:** {media}")
-    st.write(f"**Mediana:** {mediana}")
-    st.write(f"**Desviación estándar:** {desviacion}")
+    if categoria:
+        columna_seleccionada = st.selectbox(
+            f"Seleccione una columna dentro de la categoría '{categoria}':",
+            categorias[categoria])
 
+        if columna_seleccionada:
+            # Cálculos estadísticos
+            media = df[columna_seleccionada].mean()
+            mediana = df[columna_seleccionada].median()
+            desviacion = df[columna_seleccionada].std()
+
+            # Mostrar resultados
+            st.write(f"**Columna seleccionada:** {columna_seleccionada}")
+            st.write(f"**Media:** {media}")
+            st.write(f"**Mediana:** {mediana}")
+            st.write(f"**Desviación estándar:** {desviacion}")
 
 
     # Mostrar el DataFrame ordenado
