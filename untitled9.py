@@ -67,6 +67,14 @@ if df is not None and not df.empty:
 
     st.write("Transformación exitosa:")
     st.write(df.head())
+    # Filtrar columnas seleccionadas
+    columnas = ['Nombre', 'Región', 'Población', 'Área (km²)', 'Fronteras', 'Idiomas Oficiales', 'Zonas Horarias']
+    df_cleaned = df[columnas]
+
+    # Mostrar DataFrame con las columnas seleccionadas
+    st.title("Interacción con los datos:")
+    st.write("Mostrar datos originales:")
+    st.dataframe(df_cleaned)
 
     # Selección de columnas
     columnas = ['Nombre', 'Región', 'Población', 'Área (km²)', 'Fronteras', 'Idiomas Oficiales', 'Zonas Horarias']
