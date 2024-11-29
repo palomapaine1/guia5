@@ -7,11 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1cmQo4Pxl-HcJtzd7bNayItbiiC3_tzFM
 """
 
-import streamlit as st
-import pandas as pd
-# Título de la aplicación
-st.title('Aplicación de Análisis de Datos')
-
 import pandas as pd
 import requests
 import streamlit as st
