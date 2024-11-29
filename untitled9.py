@@ -85,28 +85,43 @@ else:
     st.title("Interacción con los datos")
     st.header("Mostrar los datos originales")
     st.dataframe(df_cleaned)
+    import streamlit as st
+import pandas as pd
+import numpy as np
 
-    st.header("Selecciona una columna del dataframe utilizando un menú desplegable")
-    columnas = st.multiselect('Selecciona las columnas a visualizar', df_cleaned.columns.tolist(), default=df_cleaned.columns.tolist())
-    df_seleccionado = df_cleaned[columnas]
-    # Mostrar el DataFrame con las columnas seleccionadas
-    st.write('Columna Selecionada:')
-    st.write(df_seleccionado)
-    st.write("Estadísticas de las columnas seleccionadas:")
-    st.write("Media:",)
-    st.write(df_seleccionado.mean(numeric_only=True))
-    st.write("Mediana:",)
-    st.write(df_seleccionado.median(numeric_only=True))
-    st.write("Desviación estándar:",)
-    st.write(df_seleccionado.std(numeric_only=True))
-    columna_ordenar = st.selectbox('Selecciona una columna para ordenar', df_seleccionado.columns)
-    # Control para seleccionar el orden (ascendente o descendente)
-    orden = st.radio('Selecciona el orden:', ('Ascendente', 'Descendente'))
-    # Ordenar el DataFrame según la columna seleccionada y el orden elegido
-    if orden == 'Ascendente':
-        df_ordenado = df_seleccionado.sort_values(by=columna_ordenar, ascending=True)
-    else:
-        df_ordenado = df_seleccionado.sort_values(by=columna_ordenar, ascending=False)
+# Simulación de datos (puedes reemplazar con datos reales del DataFrame)
+data = {
+    "Nombre": ["País A", "País B", "País C", "País D"],
+    "Población": [5000000, 12000000, 8000000, 6000000],
+    "Área (km²)": [100000, 250000, 180000, 150000],
+    "Zonas Horarias": [1, 2, 1, 3],}
+df = pd.DataFrame(data)
+
+# Título de la aplicación
+st.title("Cálculo de Estadísticas")
+
+# Mostrar el DataFrame original
+st.subheader("Datos Originales")
+st.write(df)
+
+# Menú desplegable para seleccionar una columna
+st.subheader("Seleccione una Columna para Calcular Estadísticas")
+columna_seleccionada = st.selectbox("Seleccione una columna numérica:", df.select_dtypes(include=np.number).columns)
+
+if columna_seleccionada:
+    # Cálculos estadísticos
+    media = df[columna_seleccionada].mean()
+    mediana = df[columna_seleccionada].median()
+    desviacion = df[columna_seleccionada].std()
+
+    # Mostrar resultados
+    st.write(f"**Columna seleccionada:** {columna_seleccionada}")
+    st.write(f"**Media:** {media}")
+    st.write(f"**Mediana:** {mediana}")
+    st.write(f"**Desviación estándar:** {desviacion}")
+
+
+
     # Mostrar el DataFrame ordenado
     st.write('DataFrame Ordenado:')
     st.write(df_ordenado)
